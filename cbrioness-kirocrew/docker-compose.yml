@@ -12,8 +12,10 @@ services:
     image: ghcr.io/cbrioness/kirocrew-umbrel:latest
     restart: on-failure
     stop_grace_period: 1m
-    ports:
-      - "8117:8117"
+    # NOTE: do NOT publish ports here. Umbrel's app_proxy fronts port 8117 and
+    # routes it to this container internally. Publishing 8117 on the web service
+    # collides with app_proxy and the container fails with
+    # "Bind for 0.0.0.0:8117 failed: port is already allocated".
     volumes:
       # Persist KiroCrew workspace, config, memory, and kiro-cli auth
       # so they survive restarts and updates.
