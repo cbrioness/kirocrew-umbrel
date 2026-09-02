@@ -7,11 +7,9 @@ services:
       APP_PORT: 8117
 
   web:
-    # Build locally from the Dockerfile in this app folder.
-    # (No official KiroCrew image is published; we build our own ARM64 image.)
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # Published multi-arch image built by GitHub Actions (see .github/workflows).
+    # Umbrel pulls this image; it does not build from a Dockerfile.
+    image: ghcr.io/cbrioness/kirocrew-umbrel:latest
     restart: on-failure
     stop_grace_period: 1m
     ports:
@@ -23,8 +21,5 @@ services:
       - ${APP_DATA_DIR}/data/kiro-cli:/root/.aws/sso
       - ${APP_DATA_DIR}/data/local:/root/.local/share/kiro
     environment:
-      # Bind the dashboard to all interfaces inside the container;
-      # Umbrel's app_proxy fronts it. Adjust the flag name to match
-      # the installed kirocrew version if needed.
       KIROCREW_HOST: 0.0.0.0
       KIROCREW_PORT: "8117"

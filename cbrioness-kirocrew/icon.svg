@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#00234B"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#FF6600"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- Ghost body -->
+  <path d="M256 112c-70 0-126 56-126 126v132c0 12 14 19 24 12l26-19c6-4 14-4 20 0l26 19c6 4 14 4 20 0l26-19c6-4 14-4 20 0l26 19c10 7 24 0 24-12V238c0-70-56-126-126-126z"
+        fill="url(#accent)"/>
+
+  <!-- Eyes -->
+  <circle cx="214" cy="236" r="24" fill="#00234B"/>
+  <circle cx="298" cy="236" r="24" fill="#00234B"/>
+  <circle cx="222" cy="230" r="8" fill="#FFFFFF"/>
+  <circle cx="306" cy="230" r="8" fill="#FFFFFF"/>
+
+  <!-- Orbit ring suggesting agents / orchestration -->
+  <ellipse cx="256" cy="236" rx="150" ry="60" fill="none" stroke="#00AEEF" stroke-width="8" opacity="0.55" transform="rotate(-18 256 236)"/>
+  <circle cx="112" cy="196" r="14" fill="#00AEEF"/>
+  <circle cx="404" cy="284" r="14" fill="#00AEEF"/>
+</svg>
