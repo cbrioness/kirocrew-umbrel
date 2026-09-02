@@ -1,13 +1,16 @@
 # KiroCrew on Umbrel (ARM64 / aarch64)
 #
-# NOTE: This Dockerfile is a STARTING POINT and must be built and tested on the
-# target Raspberry Pi (aarch64). The kiro-cli download URL and the kirocrew
-# launch command may need adjustment once verified on real hardware.
+# KiroCrew's dashboard binds LOOPBACK ONLY (127.0.0.1) by design and offers no
+# --host flag. Umbrel's app_proxy reaches the app container over the Docker
+# network (by container name), not over loopback, so a loopback-only listener
+# is unreachable and the browser gets ERR_EMPTY_RESPONSE.
+#
+# Fix: run kirocrew on its internal loopback port (5476) and put a tiny socat
+# bridge in front that listens on 0.0.0.0:8117 and forwards to 127.0.0.1:5476.
 
 FROM debian:bookworm-slim
 
 # bookworm ships glibc >= 2.36, satisfying kiro-cli's glibc >= 2.34 requirement.
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 # ---- System deps -----------------------------------------------------------
@@ -19,6 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       ca-certificates \
       git \
       unzip \
+      socat \
     && rm -rf /var/lib/apt/lists/*
 
 # ---- kiro-cli (ARM64 AppImage) ---------------------------------------------
@@ -40,9 +44,9 @@ RUN curl -fsSL -o /tmp/kiro-cli.appimage \
 RUN python3 -m pip install --break-system-packages --pre kirocrew \
       --extra-index-url https://updates.crew.kiro.dev/feed/stable/simple/
 
-# ---- Runtime ---------------------------------------------------------------
-EXPOSE 8117
+# ---- Entrypoint: start kirocrew on 5476 + socat bridge on 8117 -------------
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
-# Launch the gateway/dashboard. Verify the exact subcommand and host/port flags
-# against the installed kirocrew version on first run.
-CMD ["python3", "-m", "kiro_crew", "gateway", "--host", "0.0.0.0", "--port", "8117"]
+EXPOSE 8117
+CMD ["/usr/local/bin/start.sh"]
