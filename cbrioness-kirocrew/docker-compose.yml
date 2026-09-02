@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: cbrioness-kirocrew_web_1
+      APP_PORT: 8117
+
+  web:
+    # Build locally from the Dockerfile in this app folder.
+    # (No official KiroCrew image is published; we build our own ARM64 image.)
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    stop_grace_period: 1m
+    ports:
+      - "8117:8117"
+    volumes:
+      # Persist KiroCrew workspace, config, memory, and kiro-cli auth
+      # so they survive restarts and updates.
+      - ${APP_DATA_DIR}/data/kiro-crew:/root/.kiro/crew
+      - ${APP_DATA_DIR}/data/kiro-cli:/root/.aws/sso
+      - ${APP_DATA_DIR}/data/local:/root/.local/share/kiro
+    environment:
+      # Bind the dashboard to all interfaces inside the container;
+      # Umbrel's app_proxy fronts it. Adjust the flag name to match
+      # the installed kirocrew version if needed.
+      KIROCREW_HOST: 0.0.0.0
+      KIROCREW_PORT: "8117"
